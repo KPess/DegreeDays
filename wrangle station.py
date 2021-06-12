@@ -1,53 +1,53 @@
 # Add column indicating if data was missing
-KATL['missing'] = '0'
+KIAH['missing'] = '0'
 
 # Add missing dates to station sub-frame
 time = pd.date_range(start = '2015-01-01', end = '2021-04-20', freq='D' )
 sTime = pd.Series(index=time)
-KATL = pd.concat([KATL, sTime[~sTime.index.isin(KATL.index)]]).sort_index()
-KATL = KATL.drop([0],axis=1)
+KIAH = pd.concat([KIAH, sTime[~sTime.index.isin(KIAH.index)]]).sort_index()
+KIAH = KIAH.drop([0],axis=1)
 
 # Find rows where data is missing
-missingKATL = KATL.loc[KATL['missing'].isna() ]
+missingKIAH = KIAH.loc[KIAH['missing'].isna() ]
 # Set values in missing subset 
 # Set missing to 1
-missingKATL.loc[:,'missing'] = '1'
+missingKIAH.loc[:,'missing'] = '1'
 
 # Set name to station name
-missingKATL.loc[:, 'name'] = 'Atlanta'
+missingKIAH.loc[:, 'name'] = 'Houston'
 
 # Set region to station region
-missingKATL.loc[:, 'region'] = '6'
+missingKIAH.loc[:, 'region'] = '3'
 
 # Set state to station state
-missingKATL.loc[:, 'state'] = 'Georgia'
+missingKIAH.loc[:, 'state'] = 'Texas'
 
 # Set station_code to station
-missingKATL.loc[:, 'station_code'] = 'KATL'
+missingKIAH.loc[:, 'station_code'] = 'KIAH'
 
 # Remove empty columns of temp data
-missingKATL.drop(columns=['temp_min_c', 'temp_mean_c', 'temp_max_c', 'location_date'], inplace=True, axis=0)
+missingKIAH.drop(columns=['temp_min_c', 'temp_mean_c', 'temp_max_c', 'location_date'], inplace=True, axis=0)
 
-#Interpolate temp_min_c within KATL set 
-KATLinterpolMIN = KATL['temp_min_c'].interpolate()
+#Interpolate temp_min_c within KIAH set 
+KIAHinterpolMIN = KIAH['temp_min_c'].interpolate()
 
-#Interpolate temp_max_c within KATL set 
-KATLinterpolMAX = KATL['temp_max_c'].interpolate()
+#Interpolate temp_max_c within KIAH set 
+KIAHinterpolMAX = KIAH['temp_max_c'].interpolate()
 
-#Interpolate temp_mean_c within KATL set 
-KATLinterpolMEAN = KATL['temp_mean_c'].interpolate()
+#Interpolate temp_mean_c within KIAH set 
+KIAHinterpolMEAN = KIAH['temp_mean_c'].interpolate()
 
 # Concatenate sub-frames of interpolated temperature data into single frame
-KATLinterpol = pd.concat([KATLinterpolMAX, KATLinterpolMIN, KATLinterpolMEAN], axis=1)
+KIAHinterpol = pd.concat([KIAHinterpolMAX, KIAHinterpolMIN, KIAHinterpolMEAN], axis=1)
 
 # Create new empty frame and integrate missing date row frames with interpolated temp frame
-KATL2 = []
-KATL2 = pd.DataFrame(s)
-KATL2 = pd.concat([KATLinterpol, missingKATL], axis=1)
-KATL2 = KATL2.dropna()
+KIAH2 = []
+KIAH2 = pd.DataFrame(s)
+KIAH2 = pd.concat([KIAHinterpol, missingKIAH], axis=1)
+KIAH2 = KIAH2.dropna()
 
 # Drop all NaN rows from original station subframe and combine cleaned and interpolated subframes
-KATL = KATL.dropna()
-KATL3 = pd.concat([KATL, KATL2], axis=0)
-# Review complete sub-frame of KATL 
-print(KATL3)
+KIAH = KIAH.dropna()
+KIAH3 = pd.concat([KIAH, KIAH2], axis=0)
+# Review complete sub-frame of KIAH 
+print(KIAH3)
